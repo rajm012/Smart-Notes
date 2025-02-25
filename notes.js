@@ -1,17 +1,17 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function () {
     loadNotes();
 
-    document.getElementById("downloadNotes").addEventListener("click", () => {
-        chrome.storage.sync.get(["notes"], (data) => {
+    document.getElementById("downloadNotes").addEventListener("click", function () {
+        chrome.storage.sync.get(["notes"], function (data) {
             const notes = data.notes || [];
             if (notes.length === 0) {
                 alert("No notes to download!");
                 return;
             }
 
-            let text = "Smart Notes Saver - Downloaded Notes\n\n";
+            let text = "Saved Notes\n\n";
             notes.forEach((note, index) => {
-                text += `Note ${index + 1}:\nOriginal: ${note.originalText}\nSummary: ${note.summary}\nSaved On: ${note.timestamp}\n\n`;
+                text += `Note ${index + 1}:\nCategory: ${note.category}\nText: ${note.text}\nSaved On: ${note.timestamp}\n\n`;
             });
 
             const blob = new Blob([text], { type: "text/plain" });
@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function loadNotes() {
-    chrome.storage.sync.get(["notes"], (data) => {
+    chrome.storage.sync.get(["notes"], function (data) {
         const notes = data.notes || [];
         const notesContainer = document.getElementById("notesList");
 
@@ -39,13 +39,7 @@ function loadNotes() {
         notes.forEach((note) => {
             const noteDiv = document.createElement("div");
             noteDiv.classList.add("note-container");
-
-            noteDiv.innerHTML = `
-                <p><strong>Original:</strong> ${note.originalText}</p>
-                <p><strong>Summary:</strong> ${note.summary}</p>
-                <p><small>Saved On: ${note.timestamp}</small></p>
-            `;
-
+            noteDiv.innerHTML = `<p><strong>${note.category}:</strong> ${note.text} <br><small>Saved On: ${note.timestamp}</small></p>`;
             notesContainer.appendChild(noteDiv);
         });
     });
